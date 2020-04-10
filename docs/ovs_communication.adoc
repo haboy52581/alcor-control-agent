@@ -105,6 +105,7 @@ class Dataplane_Programming_Interface {
 Initialization - ACA will initialize OVS during its startup time. There are several ways to initialize ovs, one is start openvswith service directly or we could do the following:
 
 [source,c++]
+option 1 is the follwing set of commands:
 ------------------------------------------------------------
 a. start ovsdb-server: ovsdb-server --remote=punix:/usr/local/var/run/openvswitch/db.sock  \
   --remote=db:Open_vSwitch,Open_vSwitch,manager_options \
@@ -120,14 +121,16 @@ b. start vswitchd: ovs-vswitchd -v --pidfile --detach \
 
 c. use cmd to init: ovs-vsctl --no-wait init
 ------------------------------------------------------------
-
+option 2 is start the openvswitch service directly which would do the same to option 1
 TBD - XiaoDong, which way are we going use?
 
 . br-int, br-tun are created during init time, and recreated later in RPC loop if needed
-.. TBD - XiaoDong, are we going to follow the same?
+.. TBD - XiaoDong, are we going to follow the same? 
+... I agree
 
 . what happen when there are multiple physical NICs on the system, which NIC do we pick to hook up to br-tun, br-vlan, br-ex (if needed)?
 .. what is the exact command to connect the new port to the new br-tun, and enable encap/decap?
+... A: if you are talking about container as the end point, then they would use ovs-docker cmd which would eventually called ip link/add etc and ovs-vsctl add-port set interface type=vxlan is the one which would do encap/decap
 
 == Compare to Neutron Implementation
 
