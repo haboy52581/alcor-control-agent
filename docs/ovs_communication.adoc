@@ -45,6 +45,20 @@ TBD - Eric
 . ofctl.api.send_msg (packet) (OSKen)
 
 TBD - XiaoDong, we want to get to the next level of detail. Imagine we are going to start writing the code next week, let's give an example of the calls to make to configuration a port for vxlan. We want to understand the options/parameters needed so that we can check to make the network state message from Alcor Controller contains that information.
+A: I think you want to do the cpp call to create vxlan, in this case please refer to ovs api vxlan_create and vxlan_tnl_create (struct vport * vxlan_tnl_create(const struct vport_parms *)) locating in ovs/datapath/vport-vxlan.c on github ovs project. To find more about the parameters passing into the function call, here is one examples:
+Parms -> options parms -> options Assign to options.
+  Assign to dev.
+  Assign to vport.
+  Assign to a.
+  Assign to err.
+  Assign to conf.
+
+Regarding the sample please refer to ovs-vlan-test , e.g
+Run an :program:`ovs-vlan-test` server listening for client control traffic on 172.16.0.142 port 8080 and VLAN traffic on the default port of 1.2.3.3:
+
+ovs-vlan-test -s 172.16.0.142:8080 1.2.3.3
+Run an :program:`ovs-vlan-test` client with a control server located at 172.16.0.142 port 8080 and a local VLAN IP of 1.2.3.4:
+ovs-vlan-test 172.16.0.142:8080 1.2.3.4
 
 
 == OVS-db sample entries on Local Host
@@ -121,7 +135,7 @@ b. start vswitchd: ovs-vswitchd -v --pidfile --detach \
 
 c. use cmd to init: ovs-vsctl --no-wait init
 ------------------------------------------------------------
-option 2 is start the openvswitch service directly which would do the same to option 1
+option 2 is start the openvswitch service directly which would do the same to option 1, btw option 2 is the neutron way
 TBD - XiaoDong, which way are we going use?
 
 . br-int, br-tun are created during init time, and recreated later in RPC loop if needed
